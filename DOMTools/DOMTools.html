@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript">
+/**
+1. Cross Browser Event Registration / DeRegistration
+2. Event Object Corrections
+3. Browser is MSIE Detection
+*/
+var DOMTools={
+	BrowserIsMSIE:function(){return (navigator.userAgent.indexOf("MSIE")!=-1);},
+	eventObject:function(eObj){
+		if(!eObj){eObj=window.event;} //obtaining the correct event object
+		if(!eObj.target){eObj.target=eObj.srcElement;}  //obtaining the correct source element
+		if(!eObj.which){eObj.which=eObj.keyCode;} //obtaining the correct keyCode tracker
+	},
+	addEvent:function(elem,eventname,actiondef){
+		if(!DOMTools.BrowserIsMSIE()){
+			elem.addEventListener(eventname,actiondef,false);
+		}else{
+			elem.attachEvent("on"+eventname,actiondef);
+		}
+	},
+	removeEvent:function(elem,eventname,actiondef){
+		if(!DOMTools.BrowserIsMSIE()){
+			elem.removeEventListener(eventname,actiondef,false);
+		}else{
+			elem.detachEvent("on"+eventname,actiondef);
+		}
+	}
+};
+</script>
+</head>
+<body>
+<div id="mydiv_a" style="cursor:pointer;border:1px solid #000000;width:150px;height:20px;text-align:center;">Click Me</div>
+<form>
+<textarea id="testtext"></textarea>
+</form>
+<div style="border:1px solid #000000;" id="log"></div>
+<script type="text/javascript">
+var myelem=document.getElementById("mydiv_a");
+var mytext=document.getElementById("testtext");
+var log=document.getElementById("log");
+
+function clickEventHandler(e){
+if(!e.target)DOMTools.eventObject(e);
+alert(e.target.id);
+}
+function keyDownHandler(e){
+if(!e.target)DOMTools.eventObject(e);
+log.innerHTML+=e.which+", ";
+}
+DOMTools.addEvent(myelem,"click",clickEventHandler);
+DOMTools.addEvent(mytext,"keydown",keyDownHandler);
+
+
+/*removing events after 10 seconds, for demonstration purpose*/
+setTimeout(function(){
+DOMTools.removeEvent(myelem,"click",clickEventHandler);
+DOMTools.removeEvent(mytext,"keydown",keyDownHandler);
+log.innerHTML+="<BR/>*** Events Removed ***<BR/>";
+},10000);
+</script>
+</body>
+</html>

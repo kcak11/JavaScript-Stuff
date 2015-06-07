@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script type="text/javascript">
+var MyObject=function(){
+var details="";
+};
+MyObject.prototype={
+	setDetails:function(detArg){
+		details=detArg;
+	},
+	getDetails:function(){
+		return "Hello "+details+" from SuperClass";
+	},
+	aMethod:function(){
+		return "hello from SuperClass";
+	}
+};
+var MyChildObject=function(){};
+MyChildObject.prototype={
+		aMethod:function(){return "hello from ChildClass";},
+		getDetails:function(){return "Hello "+details+" from ChildClass";}
+};
+
+var MySubChildObject=function(){};
+MySubChildObject.prototype={
+getDetails:function(){return "Hello "+details+" from SubChildClass";}
+}
+
+
+var MySubChildObject2=function(){};
+MySubChildObject2.prototype={
+getDetails:function(){return "Hello "+details+" from SubChildClass2";}
+}
+
+var InheritanceManager={ //Based on JavaScript Prototype Inheritance Model
+	extendClass:function(bClass,cClass){ //bClass - BaseClass, cClass - ChildClass
+		for(var i in bClass.prototype){
+			if(!cClass.prototype[i]){
+			cClass.prototype[i]=bClass.prototype[i];
+			}
+		}
+	}
+};
+
+</script>
+<script type="text/javascript">
+InheritanceManager.extendClass(MyObject,MyChildObject);
+InheritanceManager.extendClass(MyChildObject,MySubChildObject); //for testing
+InheritanceManager.extendClass(MySubChildObject,MySubChildObject2); //for testing
+
+var Test=function(){};
+//InheritanceManager.extendClass(MySubChildObject,Test); //for testing - enable or disable - Line 1
+InheritanceManager.extendClass(MySubChildObject2,Test); //for testing - enable or disable - Line 2
+
+/**
+if both Line 1 & Line 2 are enabled, then the method of Line 1 is called.
+This justifies that multiple inheritance is not supported in JavaScript similar to Java.
+
+if Line 1 is only enabled, then Line 1's method is called.
+if only Line 2 is enabled, then Line 2's method is called.
+*/
+
+var mo=new Test();
+mo.setDetails("Ashish");
+alert(mo.getDetails());
+</script>
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<body>
+<div id="hzMenuContainerBar" style="position:relative;left:45px;width:750px;border:1px solid #ff0000;height:30px;">
+</div>
+<div>
+This document is dedicated to the countless lost hours of both people having to search for simple answers, and people having to answer questions that shouldn't have to be asked in the first place. Documentation is always hard to get, good documentation nearly impossible.
+
+This markup is based in the default appearance of Microsoft Windows. This can be different on your own system, but the names (text) should always the same. This is especially important on the screenshots. They are only for reference, your appearance of Notepad++ can be quite different.
+
+All the images used in this helpfile assume the default settings. If you change any of these settings, you'll have to look for the other image instead, this is most noticable with the toolbar (the position of images will always remain the same).
+
+Also, when talking about the left and right mouse buttons, the logical left and right is meant. These are the same as the physical left and right mouse buttons in the case of a right-handed setup. However, if you have a left-handed setup you will probably have the buttons swapped so act accordingly. This means in general you do what you normally do for most actions, Notepad++ mostly follows the standard Windows application behavior.
+</div>
+<script type="text/javascript">
+/*Script for jsMenu Generation*/
+(function(wobj){
+var detectIEorNot=function(){
+	if(navigator.userAgent.indexOf("MSIE")!=-1){
+		return true;
+	}else{
+		return false;
+	}
+};
+
+var registerEvent=function(elem,eventname,actiondef){
+if(navigator.userAgent.indexOf("MSIE")==-1){
+elem.addEventListener(eventname,actiondef,false);
+}else{
+elem.attachEvent("on"+eventname,actiondef);
+}
+};
+
+var CATEGORY_HIGHLIGHTED="";
+var ITEM_HIGHLIGHTED="";
+function setSelectedCategory(catID){
+CATEGORY_HIGHLIGHTED=catID;
+}
+function getSelectedCategory(){
+return CATEGORY_HIGHLIGHTED;
+}
+function setSelectedItem(itemID){
+ITEM_HIGHLIGHTED=itemID;
+};
+function getSelectedItem(){
+return ITEM_HIGHLIGHTED;
+}
+
+/*a horizontal menu container div needs to be defined with id hzMenuContainerBar and relative position style*/
+var jsMenuContainer=document.getElementById("hzMenuContainerBar");
+jsMenuContainer.style.fontFamily="Verdana";
+function getRandomID(){
+return "menuElem"+(Math.random()+""+Math.random()).split(".").join("").toString();
+}
+var catIDArray=[];
+var categoryArray=[];
+var catItemContainerWidth=121;
+CATEGORY_MouseOVER_BGCOLOR="#ffba75";
+CATEGORY_MouseOUT_BGCOLOR="#ffffff";
+wobj.MenuCategory=function(catLabel){
+	this.create=function(){
+		var aCat=document.createElement("div");
+		var aCatID=getRandomID();
+		aCat.id=aCatID;
+		aCat.style.border="1px solid #ff0000";
+		aCat.style.position="relative";
+		aCat.style.margin="2px";
+		aCat.style.top="5px";
+		aCat.style.padding="2px";
+		aCat.style.cursor="pointer";
+		aCat.style.paddingLeft=aCat.style.paddingRight="5px";
+		aCat.style.display="inline";
+		aCat.innerHTML=catLabel;
+		registerEvent(aCat,"mouseover",function(){mouseOverHandler(aCat);});
+		registerEvent(aCat,"mouseout",function(){mouseOutHandler(aCat);});
+		jsMenuContainer.appendChild(aCat);
+		var cat=(document.getElementById(aCatID+"_items"))?document.getElementById(aCatID+"_items"):getCatItemContainer(aCatID);
+		catIDArray.push(aCatID+"_items");
+		categoryArray.push(aCatID);
+		return aCatID;
+	}
+	var mouseOverHandler=function(elem){
+		hideAllPops();
+		setSelectedCategory(elem.id);
+		elem.style.backgroundColor=CATEGORY_MouseOVER_BGCOLOR;
+		document.getElementById(elem.id+"_items").style.display="block";
+	};
+	var mouseOutHandler=function(elem){
+		setSelectedCategory("");
+		elem.style.backgroundColor=CATEGORY_MouseOUT_BGCOLOR;
+	};
+};
+getCatItemContainer=function(category){
+	var catitemcontainer=document.createElement("div");
+	catitemcontainer.id=category+"_items";
+	catitemcontainer.style.position="absolute";
+	catitemcontainer.style.border="1px solid #ff0000";
+	catitemcontainer.style.backgroundColor="#ffffff";
+	catitemcontainer.style.left=(document.getElementById(category).offsetLeft+5)+"px";
+	catitemcontainer.style.top="26px";
+	catitemcontainer.style.zIndex=121;
+	catitemcontainer.style.display="none";
+	catitemcontainer.style.width=catItemContainerWidth+"px";
+	jsMenuContainer.appendChild(catitemcontainer);
+	registerEvent(catitemcontainer,"mouseover",function(){mouseOverHandler(catitemcontainer);});
+	registerEvent(catitemcontainer,"mouseout",function(){mouseOutHandler(catitemcontainer);});
+	var mouseOverHandler=function(elem){
+		setSelectedCategory(elem.id);
+		document.getElementById(category).style.backgroundColor=CATEGORY_MouseOVER_BGCOLOR;
+	};
+	var mouseOutHandler=function(elem){
+		setSelectedCategory("");
+		document.getElementById(category).style.backgroundColor=CATEGORY_MouseOUT_BGCOLOR;
+	};
+	return catitemcontainer;
+};
+wobj.MenuItem=function(category,itemLabel,itemAction,hasSubMenu){
+	var subMenuExists=false;
+	this.add=function(){
+		subMenuExists=hasSubMenu;
+		var cat=(document.getElementById(category+"_items"))?document.getElementById(category+"_items"):getCatItemContainer(category);
+		var itemID=getRandomID()+"_i";
+		var itemElement=document.createElement("div");
+		itemElement.innerHTML=itemLabel;
+		itemElement.style.position="relative";
+		if(subMenuExists==true){
+			var chevron=document.createElement("span");
+			chevron.innerHTML="&gt;";
+			chevron.style.position="absolute";
+			chevron.style.right="3px";
+			itemElement.appendChild(chevron);
+		}
+		itemElement.style.border="1px solid #ff0000";
+		itemElement.style.padding="2px";
+		itemElement.style.cursor="pointer";
+		itemElement.style.leftPadding=itemElement.style.rightPadding="5px";
+		itemElement.id=itemID;
+		cat.appendChild(itemElement);
+		registerEvent(itemElement,"mouseover",function(){mouseOverHandler(itemElement);});
+		registerEvent(itemElement,"mouseout",function(){mouseOutHandler(itemElement);});
+		registerEvent(itemElement,"click",function(){clickHandler(itemElement);});
+		if(subMenuExists==true){
+			var submenucontainer=(document.getElementById(itemID+"_sm"))?document.getElementById(itemID+"_sm"):getSubMenuContainer(itemID);
+		}
+		return itemID;
+	};
+	var clickHandler=function(menuitem){
+		if(!subMenuExists || subMenuExists==false){
+		 hideAllPops();
+		 resetCategories();
+		 try{itemAction();}catch(e){}
+		}
+	};
+	var mouseOverHandler=function(menuitem){
+		setSelectedItem(menuitem.id);
+		document.getElementById(category).style.backgroundColor=CATEGORY_MouseOVER_BGCOLOR;
+		menuitem.style.backgroundColor="#ffba75";
+		if(subMenuExists==true){
+			document.getElementById(menuitem.id+"_sm").style.display="block";
+		}
+	};
+	var mouseOutHandler=function(menuitem){
+		setSelectedItem("");
+		document.getElementById(category).style.backgroundColor=CATEGORY_MouseOUT_BGCOLOR;
+		menuitem.style.backgroundColor="#ffffff";
+		if(subMenuExists==true){
+			document.getElementById(menuitem.id+"_sm").style.display="none";
+		}
+	};
+};
+var getSubMenuContainer=function(parentcontainer){
+	var submenuitemcontainer=document.createElement("div");
+	submenuitemcontainer.id=parentcontainer+"_sm";
+	submenuitemcontainer.style.position="absolute";
+	submenuitemcontainer.style.border="1px solid #ff0000";
+	submenuitemcontainer.style.backgroundColor="#ffffff";
+	submenuitemcontainer.style.left=(catItemContainerWidth-4)+"px"; //document.getElementById(parentcontainer).offsetLeft+
+	submenuitemcontainer.style.top=(2)+"px"; //document.getElementById(parentcontainer).offsetTop+
+	submenuitemcontainer.style.display="none";
+	submenuitemcontainer.style.zIndex=242;
+	submenuitemcontainer.style.width="121px";
+	document.getElementById(parentcontainer).appendChild(submenuitemcontainer);
+	registerEvent(submenuitemcontainer,"mouseover",function(){mouseOverHandler(submenuitemcontainer);});
+	registerEvent(submenuitemcontainer,"mouseout",function(){mouseOutHandler(submenuitemcontainer);});
+	var mouseOverHandler=function(elem){
+		setSelectedCategory(elem.id);
+		document.getElementById(parentcontainer).style.backgroundColor=CATEGORY_MouseOVER_BGCOLOR;
+	};
+	var mouseOutHandler=function(elem){
+		setSelectedCategory("");
+		document.getElementById(parentcontainer).style.backgroundColor=CATEGORY_MouseOUT_BGCOLOR;
+	};
+	return submenuitemcontainer;
+};
+wobj.SubMenuItem=function(parentcontainer,itemLabel,itemAction,hasSubMenu){
+	var subMenuExists=false;
+	this.add=function(){
+		subMenuExists=hasSubMenu;
+		var submenucontainer=(document.getElementById(parentcontainer+"_sm"))?document.getElementById(parentcontainer+"_sm"):getSubMenuContainer(parentcontainer);
+		var submenuitemid=getRandomID()+"_smi";
+		var submenuitem=document.createElement("div");
+		submenuitem.innerHTML=itemLabel;
+		submenuitem.id=submenuitemid;
+		if(subMenuExists==true){
+			var chevron=document.createElement("span");
+			chevron.innerHTML="&gt;";
+			chevron.style.position="absolute";
+			chevron.style.right="3px";
+			submenuitem.appendChild(chevron);
+		}
+		submenuitem.style.position="relative";
+		submenuitem.style.border="1px solid #ff0000";
+		submenuitem.style.padding="2px";
+		submenuitem.style.cursor="pointer"
+		submenuitem.style.leftPadding=submenuitem.style.rightPadding="5px";
+		submenucontainer.appendChild(submenuitem);
+		registerEvent(submenuitem,"mouseover",function(){mouseOverHandler(submenuitem);});
+		registerEvent(submenuitem,"mouseout",function(){mouseOutHandler(submenuitem);});
+		registerEvent(submenuitem,"click",function(){clickHandler(submenuitem);});
+		if(subMenuExists==true){
+			var submenucontainer=(document.getElementById(submenuitemid+"_sm"))?document.getElementById(submenuitemid+"_sm"):getSubMenuContainer(submenuitemid);
+		}
+		return submenuitemid;
+	};
+	var clickHandler=function(elem){
+		if(!subMenuExists || subMenuExists==false){
+			hideAllPops();
+			resetCategories();
+			try{itemAction();}catch(e){}
+		}
+	};
+	var mouseOverHandler=function(elem){
+		setSelectedItem(elem.id);
+		elem.style.backgroundColor="#ffba75";
+		if(subMenuExists==true){
+			document.getElementById(elem.id+"_sm").style.display="block";
+		}
+	};
+	var mouseOutHandler=function(elem){
+		setSelectedItem("");
+		elem.style.backgroundColor="#ffffff";
+		if(subMenuExists==true){
+			document.getElementById(elem.id+"_sm").style.display="none";
+		}
+	};
+};
+var menuStateChecker=function(){
+var selCat=getSelectedCategory();
+var selItem=getSelectedItem();
+if(selCat=="" && selItem==""){
+	hideAllPops();
+}
+};
+function resetCategories(){
+for(var i=0;i<categoryArray.length;i++){
+	document.getElementById(categoryArray[i]).style.backgroundColor=CATEGORY_MouseOUT_BGCOLOR;
+}
+}
+function hideAllPops(){
+for(var i=0;i<catIDArray.length;i++){
+	document.getElementById(catIDArray[i]).style.display="none";
+}
+}
+wobj.setInterval(function(){menuStateChecker();},100);
+})(window);
+</script>
+<script type="text/javascript">
+var cat1=new MenuCategory("Programming").create();
+var cat2=new MenuCategory("Forums").create();
+var cat3=new MenuCategory("Downloads").create();
+var cat4=new MenuCategory("Research").create();
+var cat5=new MenuCategory("Design Patterns").create();
+
+var menuitem1=new MenuItem(cat1,"Java",function(){alert("This is Java");}).add();
+var menuitem2=new MenuItem(cat1,"SQL","").add();
+var menuitem3=new MenuItem(cat1,"JavaScript","").add();
+
+var menuitem4=new MenuItem(cat3,"General","",true).add();
+var menuitem5=new MenuItem(cat3,"IDE","").add();
+
+var menuitem6=new MenuItem(cat2,"IDE","").add();
+var menuitem7=new MenuItem(cat2,"IDE","",true).add();
+var menuitem8=new MenuItem(cat2,"IDE","").add();
+
+var menuitem9=new MenuItem(cat4,"IDE","").add();
+var menuitem10=new MenuItem(cat4,"IDE","").add();
+var menuitem11=new MenuItem(cat4,"IDE","").add();
+
+var menuitem12=new MenuItem(cat5,"IDE","").add();
+var menuitem13=new MenuItem(cat5,"IDE","").add();
+var menuitem14=new MenuItem(cat3,"IDE","",true).add();
+
+var submenuitem1=new SubMenuItem(menuitem4,"Gen 1","").add();
+var submenuitem2=new SubMenuItem(menuitem4,"Gen 2","").add();
+var submenuitem3=new SubMenuItem(menuitem4,"Gen 3","").add();
+
+var submenuitem4=new SubMenuItem(menuitem7,"abc 1",function(){alert("hello");},true).add();
+var submenuitem5=new SubMenuItem(menuitem7,"abc 2",function(){
+	alert("This is a click action.");
+}).add();
+var submenuitem6=new SubMenuItem(menuitem7,"abc 3","").add();
+
+var submenuitem7=new SubMenuItem(menuitem14,"ddd 1","").add();
+var submenuitem8=new SubMenuItem(menuitem14,"Gddden 2","").add();
+var submenuitem9=new SubMenuItem(menuitem14,"Gedddn 3","").add();
+
+var level2submenuitem1=new SubMenuItem(submenuitem4,"S S Item1","").add();
+var level2submenuitem2=new SubMenuItem(submenuitem4,"S S Item2","",true).add();
+var level2submenuitem3=new SubMenuItem(submenuitem4,"S S Item3",function(){alert("ss menu");}).add();
+
+var level3submenuitem1=new SubMenuItem(level2submenuitem2,"L1","").add();
+var level3submenuitem2=new SubMenuItem(level2submenuitem2,"L2",function(){alert("An Action");}).add();
+var level3submenuitem3=new SubMenuItem(level2submenuitem2,"L3",function(){alert("An Action");}).add();
+</script>
+</body>
+</html>

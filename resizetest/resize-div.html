@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="jq.js"></script>
+</head>
+<body>
+<br/><br/><br/><br/>
+<div style="position:relative;left:50px;top:50px;">
+<div style="position:absolute;left:50px;top:50px;">
+<div style="position:relative;left:50px;top:50px;">
+<div style="position:absolute;left:50px;top:50px;">
+<div style="position:relative;left:50px;top:50px;">
+<div style="position:absolute;left:50px;top:50px;border:1px solid red;">
+<div id="mydiv" style="position:absolute;left:150px;top:20px;width:200px;height:150px;overflow:hidden;border:1px solid #000000;background-color:#ffffff;">
+This is some convent inside a resizable DIV. Drag the right / bottom edge of this Div to resize accordingly.
+<div id="rbar" style="cursor:e-resize;width:5px;background-color:#ffba75;position:absolute;right:0px;top:0px;height:100%;">&nbsp;</div>
+<div id="bbar" style="cursor:n-resize;height:5px;background-color:#ffba75;position:absolute;bottom:0px;left:0px;width:100%;">&nbsp;</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+Some content below div.
+<script type="text/javascript">
+var xpos,ypos;
+$(document).mousemove(function(e){
+      xpos=e.pageX;
+	  ypos=e.pageY;
+   }); 
+function registerEvents(elem,eventname,action){
+if(navigator.userAgent.indexOf("MSIE")==-1){
+elem.addEventListener(eventname,action,false);
+}else{
+elem.attachEvent("on"+eventname,action);
+}
+}
+
+var md=document.getElementById("mydiv");
+var rb=document.getElementById("rbar");
+var bb=document.getElementById("bbar");
+var rw=0,rh=0;
+var resize=false;
+var xoffset=0,yoffset=0;
+var enode=document.getElementById("mydiv");
+while(enode){
+if(enode.offsetLeft){
+xoffset+=parseInt(enode.offsetLeft,10);
+}
+if(enode.offsetTop){
+yoffset+=parseInt(enode.offsetTop,10);
+}
+enode=enode.parentNode;
+}
+function resizeWidth(elem){
+elem.style.borderRight="1px dashed #000000";
+resize=true;
+rw=window.setInterval(function(){
+if(resize){
+elem.style.width=(xpos-xoffset+2)+"px";
+try{document.selection.empty();}catch(e){} //remove IE text selection
+try{window.getSelection().removeAllRanges();}catch(e){} //remove other browser text selection
+}
+},22);
+}
+function resizeHeight(elem){
+elem.style.borderBottom="1px dashed #000000";
+resize=true;
+rh=window.setInterval(function(){
+if(resize){
+elem.style.height=(ypos-yoffset+2)+"px";
+try{document.selection.empty();}catch(e){} //remove IE text selection
+try{window.getSelection().removeAllRanges();}catch(e){} //remove other browser text selection
+}
+},22);
+}
+function stopResizing(elem){
+resize=false;
+window.clearInterval(rw);
+window.clearInterval(rh);
+elem.style.border="1px solid #000000";
+}
+registerEvents(rb,"mousedown",function(){resizeWidth(md);});
+registerEvents(bb,"mousedown",function(){resizeHeight(md);});
+registerEvents(document,"mouseup",function(){stopResizing(md);});
+</script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<body>
+<div id="logArea" style="width:500px;height:400px;overflow:auto;">
+</div>
+<script type="text/javascript">
+var logArea=document.getElementById("logArea");
+function log(msg){
+logArea.innerHTML+=msg+"<br/>";
+}
+function Vehicle(hasEngine,hasDriver){
+this.hE=hasEngine || false;
+this.hD=hasDriver || false;
+this.getDetails=function(){return "Det from SuperClass "+this.hE};  //privileged method declaration
+}
+Vehicle.prototype={
+getDetails:function(){return "Details_from Super Class "+this.hE;}  //public method declaration
+}
+function Car(make,model,year,hE,hD){
+this.ghweolnv=Vehicle;
+this.ghweolnv(hE,hD);
+this.make=make;
+this.model=model;
+this.year=year;
+this.getDetails=function(){return "jjjjjjj";};  //privileged method declaration
+}
+Car.prototype=new Vehicle;
+Car.prototype.getDetails=function(){return "Details _from Child123 Class";}; //public method declaration
+
+var myCar=new Car("Maruti","1000","2012","superEngine","Michel");
+log(myCar.make+" "+myCar.model+" "+myCar.year);
+log(myCar.make+" "+myCar.model+" "+myCar.year+" "+myCar.hE+" "+myCar.hD);
+log(myCar.make+" "+myCar.model+" "+myCar.year+" "+myCar.hE+" "+myCar.hD+" "+myCar.getDetails());
+</script>
+</body>
+</html>
