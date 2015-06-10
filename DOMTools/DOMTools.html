@@ -8,7 +8,7 @@
 3. Browser is MSIE Detection
 */
 var DOMTools={
-	BrowserIsMSIE:function(){return (navigator.userAgent.indexOf("MSIE")!=-1);},
+	BrowserIsMSIE:function(){return (navigator.userAgent.indexOf("MSIE")!=-1 || "ActiveXObject" in window);},
 	eventObject:function(eObj){
 		if(!eObj){eObj=window.event;} //obtaining the correct event object
 		if(!eObj.target){eObj.target=eObj.srcElement;}  //obtaining the correct source element
