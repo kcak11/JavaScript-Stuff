@@ -9,11 +9,11 @@ Code Author: K.C.Ashish Kumar
     if(o === ''){
       return '\"\"';
     }
-    if(o === NaN){
-      return ''+null;
-    }
     if (!o || typeof o === 'function') {
       return undefined;
+    }
+    if(o.toString && typeof o.toString === "function" && o.toString()==="NaN"){
+      return ''+null;
     }
     if (typeof o !== 'object') {
       return '' + o;
