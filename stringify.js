@@ -3,8 +3,14 @@ Code Author: K.C.Ashish Kumar
 */
 (function (w) {
   w._getString = function (o) {
-    if (!o) {
-      return o;
+    if (o === false || o === 0 || o === null) {
+      return '' + o;
+    }
+    if (!o || typeof o === 'function') {
+      return undefined;
+    }
+    if (typeof o !== 'object') {
+      return '' + o;
     }
     var res = '{';
     var isObjArray = false;
@@ -99,7 +105,7 @@ Code Author: K.C.Ashish Kumar
 }(this));
 
 /*USAGE:*/
-var o={a:5,b:6,c:"5",d:[[5,6],[7,8,{"ashish":"kumar"}],[3,2,[4,5]]],e:{q:7,l:9,c:[3,4,5,{j:"ashish",q:[5,6,7,8,[[[{Q:"56",p:true}]]]]}]},f:true,g:false,h:null,i:new Date(),j:undefined,k:{j:[{m:[6,3]}]}};
+var o={a:5,b:6,c:"5",d:[[5,6,0],[7,8,{"ashish":"kumar"}],[3,2,[4,5]]],e:{q:7,l:9,c:[3,4,5,{j:"ashish",q:[5,6,7,8,[[[{Q:"56",p:true}]]]]}]},f:true,g:false,h:null,i:new Date(),j:undefined,k:{j:[{m:[6,3]}]}};
 var k=window.stringify(o);
 console.log(k);
 JSON.parse(k); /*Only for testing purpose*/
