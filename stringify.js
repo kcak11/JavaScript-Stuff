@@ -71,6 +71,18 @@ Code Author: K.C.Ashish Kumar
             }
             break;
           case 'number':
+            var v = '';
+            if (isNaN(o[i])) {
+              v = '' + null;
+            } else {
+              v = o[i];
+            }
+            if (!isObjArray) {
+              res += '"' + i + '":' + v + ',';
+            } else {
+              res += v + ',';
+            }
+            break;
           case 'boolean':
             if (!isObjArray) {
               res += '"' + i + '":' + o[i] + ',';
