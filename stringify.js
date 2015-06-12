@@ -9,7 +9,7 @@ Code Author: K.C.Ashish Kumar
     if(o === ''){
       return '\"\"';
     }
-    if(typeof o.toString === 'function' && o.toString()==="NaN"){
+    if(o && typeof o.toString === 'function' && o.toString()==="NaN"){
       return ''+null;
     }
     if (typeof o === 'undefined' || typeof o === 'function') {
