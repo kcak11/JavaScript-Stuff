@@ -12,7 +12,7 @@ Code Author: K.C.Ashish Kumar
     if(typeof o.toString === 'function' && o.toString()==="NaN"){
       return ''+null;
     }
-    if (!o || typeof o === 'function') {
+    if (typeof o === 'undefined' || typeof o === 'function') {
       return undefined;
     }
     if (typeof o !== 'object') {
