@@ -9,6 +9,9 @@ Code Author: K.C.Ashish Kumar
     if(o === ''){
       return '\"\"';
     }
+    if(o === NaN){
+      return ''+null;
+    }
     if (!o || typeof o === 'function') {
       return undefined;
     }
