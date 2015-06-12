@@ -3,8 +3,11 @@ Code Author: K.C.Ashish Kumar
 */
 (function (w) {
   w._getString = function (o) {
-    if (o==='' || o === false || o === 0 || o === null) {
+    if (o === false || o === 0 || o === null) {
       return '' + o;
+    }
+    if(o === ''){
+      return '\"\"';
     }
     if (!o || typeof o === 'function') {
       return undefined;
