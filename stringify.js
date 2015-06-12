@@ -6,11 +6,11 @@ Code Author: K.C.Ashish Kumar
     if (o === false || o === 0 || o === null) {
       return '' + o;
     }
-    if(o === ''){
-      return '\"\"';
+    if (o === '') {
+      return '""';
     }
-    if(typeof o !== 'undefined' && typeof o.toString === 'function' && o.toString()==="NaN"){
-      return ''+null;
+    if (typeof o !== 'undefined' && typeof o.toString === 'function' && o.toString() === 'NaN') {
+      return '' + null;
     }
     if (typeof o === 'undefined' || typeof o === 'function') {
       return undefined;
