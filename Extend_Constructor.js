@@ -27,7 +27,9 @@ var ObjectConstructorExtend = function (a) {
         _cacheEmpty.call(_o);
       }
       for (var i in _o) {
-        delete _o[i];
+        if (_o[i] && !_o[i].isPrivate) {
+          delete _o[i];
+        }
       }
       return _o;
     };
