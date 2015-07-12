@@ -13,12 +13,18 @@
 */
 (function () {
   window.highlightLayouts = function (selector, highlightDurationMillis) {
+    if (!document.querySelectorAll) {
+      if (window.console && window.console.log) {
+        console.log.call(console, 'Please upgrade your browser. Utility not supported on older versions of browser');
+      }
+      return;
+    }
     var elements = document.querySelectorAll(selector);
-    var callstack = [
-    ];
     var _hl = function (millis, ctr) {
+      var win = this.ownerDocument.defaultView;
+      var docElem = this.ownerDocument.documentElement;
       var ostyle = 'rgb(0,162,232) solid 5px';
-      var s = this.ownerDocument.defaultView.getComputedStyle(this, null);
+      var s = win.getComputedStyle(this, null);
       var elemID = this.getAttribute('id');
       var elemClass = this.className;
       var sel = '';
@@ -44,12 +50,12 @@
       var _this = this;
       setTimeout(function () {
         _this.style.outline = ostyle;
-        var top = _this.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop) - (document.documentElement.clientTop || 0);
-        var left = _this.getBoundingClientRect().left + (window.pageXOffset || document.documentElement.scrollLeft) - (document.documentElement.clientLeft || 0);
-        _this.ownerDocument.defaultView.scrollTo(left, top);
-        if (window.console && window.console.log) {
+        var top = _this.getBoundingClientRect().top + (win.pageYOffset || docElem.scrollTop) - (docElem.clientTop || 0);
+        var left = _this.getBoundingClientRect().left + (win.pageXOffset || docElem.scrollLeft) - (docElem.clientLeft || 0);
+        win.scrollTo(left - 11, top - 11);
+        if (win.console && win.console.log) {
           try {
-            window.console.log(sel);
+            win.console.log(sel);
           } catch (_) {
           }
         }
@@ -64,10 +70,13 @@
       try {
         _hl.call(elements[i], highlightDurationMillis, i);
       } catch (__) {
-        (window.console && window.console.error) ? console.error.call(console, __)  : void (0);
+        if (window.console && window.console.error) {
+          console.error.call(console, __);
+        }
       }
     }
   };
 }());
+
 /*Usage Example:*/
 highlightLayouts('section[data-showview]', 2000);
