@@ -17,7 +17,6 @@
     var callstack = [
     ];
     var _hl = function (millis, ctr) {
-      var _body = this.ownerDocument.getElementsByTagName('body') [0];
       var ostyle = 'rgb(0,162,232) solid 5px';
       var s = this.ownerDocument.defaultView.getComputedStyle(this, null);
       var elemID = this.getAttribute('id');
@@ -47,8 +46,7 @@
         _this.style.outline = ostyle;
         var top = _this.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop) - (document.documentElement.clientTop || 0);
         var left = _this.getBoundingClientRect().left + (window.pageXOffset || document.documentElement.scrollLeft) - (document.documentElement.clientLeft || 0);
-        _body.scrollTop = top - 11;
-        _body.scrollLeft = left - 11;
+        _this.ownerDocument.defaultView.scrollTo(left, top);
         if (window.console && window.console.log) {
           try {
             window.console.log(sel);
