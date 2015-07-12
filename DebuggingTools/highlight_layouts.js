@@ -8,7 +8,7 @@
 *
 * Current Version: 1.21
 * Author: K.C.Ashish Kumar
-* More Info: http://www.ashishkumarkc.com / http://m.ashishkumarkc.com
+* More Info: http://www.ashishkumarkc.com / http://m.ashishkumarkc.com 
 *
 */
 (function () {
