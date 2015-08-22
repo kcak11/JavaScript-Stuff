@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+</head>
+<body>
+<script type="text/javascript">
+var depMods={};
+function myloader(name,deps,callback){
+	if(arguments.length==1){
+		if(typeof arguments[0]==="function"){
+			console.log("A \"name\" / \"dependancy array\" is must for loading & registering module. ");
+		}
+	}
+	if(typeof name!=="string"){
+		if(Object.prototype.toString.call(name)==="[object Array]"){
+			callback=deps;
+			deps=name;
+			name=null;
+		}
+	}
+	if(Object.prototype.toString.call(deps)!=="[object Array]"){
+		callback=deps;
+		deps=null;
+	}
+	if(deps){
+		for(var i=0;i<deps.length;i++){
+			var url=deps[i];
+			if(url.lastIndexOf(".js")!==url.length-3){
+				url+=".js";
+			}
+			var s=document.createElement("script");
+			s.type="text/javascript";
+			s.src=url;
+			document.getElementsByTagName("head")[0].appendChild(s);
+		}
+	}
+	if(callback){
+		if(deps){
+			var len=deps.length;
+			var ctr=0;
+			function chkDepsLoaded(){
+				for(var d in deps){
+					if(depMods[deps[d]]){
+						ctr++;
+					}
+				}
+				if(ctr==deps.length){
+					var ta=[];
+					for(var i=0;deps && i<deps.length;i++){
+						if(depMods[deps[i]]){
+							ta.push(depMods[deps[i]]);
+						}
+					}
+					depMods[name]=callback.apply(null,ta);
+				}else{
+					ctr=0;
+					setTimeout(function(){chkDepsLoaded();},20);
+				}
+			};
+			chkDepsLoaded();
+		}else{
+			if(name){
+				depMods[name]=callback();
+			}
+		}
+	}
+}
+
+
+myloader("mainmodule",["file1","file2"],function(a1,a2){
+	console.log(a1);
+	console.log(a2);
+	a1.doOperation();
+	a2.doAnotherOperation();
+	return {};
+});
+
+</script>
+</body>
+</html>
