@@ -2,6 +2,7 @@
 This is a work-in-progress.
 */
 var glbspace = {
+    waittime:500
 };
 var doAction = function () {
   console.log('Executed . . .' + Math.random());
@@ -12,10 +13,10 @@ window.onresize = function () {
     glbspace.entry = (new Date()).getTime();
   } else {
     setTimeout(function () {
-      if (((new Date()).getTime() - glbspace.entry) > 500) {
+      if (((new Date()).getTime() - glbspace.entry) > glbspace.waittime) {
         doAction();
       }
-    }, 511);
+    }, (glbspace.waittime+11));
     glbspace.entry = (new Date()).getTime();
   }
 }
