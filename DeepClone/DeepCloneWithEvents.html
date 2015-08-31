@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<body>
+<div class="testElement">
+	<div id="e1">Click Me 1</div>
+	<div id="e2">Click Me 2</div>
+</div>
+<script type="text/javascript">
+
+var allElems=document.getElementsByTagName("body")[0].getElementsByTagName("*");
+for(var i=0;i<allElems.length;i++){
+	if(allElems[i].addEventListener){
+		(function(){
+			var _c=allElems[i].addEventListener;
+			var t=function(etype,handler,capturing){
+				this.evtmap=this.evtmap||[];
+				this.evtmap.push([etype,handler,capturing]);
+				_c.apply(this,[etype,handler,capturing]);
+			};
+			allElems[i].addEventListener=t;
+		}());
+	}
+	if(allElems[i].attachEvent){
+		(function(){
+			var _c=allElems[i].attachEvent;
+			var t=function(etype,handler){
+				this.evtamap=this.evtamap||[];
+				this.evtamap.push([etype,handler]);
+				_c.call(this,etype,handler);
+			};
+			allElems[i].attachEvent=t;
+		}());
+	}
+}
+var copyEvents=function(s,t){
+	if(!s || !t){
+		return;
+	}
+	if(s.evtmap){
+		for(var i=0;i<s.evtmap.length;i++){
+			t.addEventListener(s.evtmap[i][0],s.evtmap[i][1],s.evtmap[i][2]);
+		}
+	}
+	if(s.evtamap){
+		for(var j=0;j<s.evtamap.length;j++){
+			t.attachEvent(s.evtamap[j][0],s.evtamap[j][1]);
+		}
+	}
+	for(var k in s){
+		if(k.toLowerCase().indexOf("on")==0){
+			t[k]=s[k];
+		}
+	}
+	return t;
+};
+
+var cloneElement=function(sourceElement){
+	if(!sourceElement){
+		return null;
+	}
+	var _clonedElement=sourceElement.cloneNode(true);
+	
+	copyEvents(sourceElement,_clonedElement);
+	
+	var allNestedElementsInSource=sourceElement.getElementsByTagName("*");
+	var allNestedElementsInClone=_clonedElement.getElementsByTagName("*");
+	for(var i=0;i<allNestedElementsInClone.length;i++){
+		copyEvents(allNestedElementsInSource[i],allNestedElementsInClone[i]);
+	}
+	
+	return _clonedElement;
+};
+
+
+/*USAGE Below:*/
+var refElem=document.querySelectorAll(".testElement")[0];
+var rE1=document.getElementById("e1");
+var rE2=document.getElementById("e2");
+
+refElem.addEventListener("click",function(e){
+	console.log("Event bound from addEventListener"+Math.random());
+},false);
+refElem.addEventListener("click",function(e){
+	console.log(e.target);
+	e.target.style.backgroundColor="blue";
+	e.target.style.color="white";
+},false);
+
+rE1.addEventListener("click",function(e){
+	console.log("e1 clicked :"+e.target);
+});
+rE2.addEventListener("click",function(e){
+	console.log("e2 clicked :"+e.target);
+});
+
+refElem.onclick=function(){
+	alert("you clicked: "+this);
+};
+
+/*refElem.attachEvent("onclick",function(e){
+	e.srcElement.style.fontSize="50px";
+});
+rE1.attachEvent("onclick",function(e){
+	e.srcElement.style.border="5px solid black";
+});
+rE2.attachEvent("onclick",function(e){
+	e.srcElement.style.border="5px solid red";
+});*/
+
+setTimeout(function(){
+	document.getElementsByTagName("body")[0].appendChild(cloneElement(refElem));
+},1000);
+</script>
+</body>
+</html>
