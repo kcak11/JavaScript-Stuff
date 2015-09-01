@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sticky Component</title>
+</head>
+<body>
+<br/><br/><br/><br/><br/><br/>
+<div id="myBtn" style="border:2px solid black;padding:5px;position:absolute;top:300px;left:400px;">my button</div>
+<div style="height:4000px;"></div>
+<script type="text/javascript">
+var initSticky = function (obj, w) {
+  obj.initial_offsettop = obj.getBoundingClientRect().top + (w.pageYOffset || document.documentElement.scrollTop) - (document.documentElement.clientTop || 0);
+  function readStyle(o, prop) {
+    if (typeof getComputedStyle !== 'undefined') {
+      return getComputedStyle(o, null) [prop];
+    } else {
+      return o.currentStyle[prop];
+    }
+  };
+  obj.initial_styleposition = readStyle(obj, 'position');
+  obj.initial_styletop = readStyle(obj, 'top');
+  obj.initial_stylezindex = readStyle(obj, 'z-index');
+  w.stickyElement = obj;
+  var bdy = document.getElementsByTagName('body') [0];
+  w.onscroll = function () {
+    var sTop = w.pageYOffset || document.documentElement.scrollTop;
+    if (sTop >= stickyElement.initial_offsettop) {
+      stickyElement.style.position = 'fixed';
+      stickyElement.style.top = '0px';
+      stickyElement.style.zIndex = 500;
+    } else {
+      stickyElement.style.position = w.stickyElement.initial_styleposition;
+      stickyElement.style.top = w.stickyElement.initial_styletop;
+      stickyElement.style.zIndex = w.stickyElement.initial_stylezindex;
+    }
+  };
+};
+initSticky(document.getElementById('myBtn'), window);
+</script>
+</body>
+</html>
