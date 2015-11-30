@@ -1,7 +1,14 @@
 /*
 Text trimming logic
+Author: K.C.Ashish Kumar
+version: 1.331
 */
-var ss=document.querySelectorAll("#mp-tfa")[0]; /*element that contains the html markup*/
+var ss=document.querySelectorAll("#mp-tfa")[0]; 
+/*Element that contains the html markup. 
+Choice of this element has to be made carefully so that it 'does not contain' any wrapper elements 
+for the actual text.*/
+
+
 var tmp=document.createElement("div");
 var len=0;
 var trimlength=397;
