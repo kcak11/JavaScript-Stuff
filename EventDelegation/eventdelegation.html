@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>JavaScript Event-Delegation Demo</title>
+<style type="text/css">
+.pclass{
+    border:2px solid #000;
+    margin:20px;
+}
+.dyncreate{
+    background-color:red;
+}
+</style>
+</head>
+<body>
+<div class="pclass">
+<div>sample text</div><br/><div class="mydiv kk">Click Me 1 (evt handled)</div><br/><div>sample text</div>
+</div>
+<div class="pclass">
+<div>sample text</div><br/><div class="mydiv kk">Click Me 2 (evt handled)</div><br/><div>sample text</div>
+</div>
+<div class="pclass">
+<div>sample text</div><br/><div class="mydiv kk">Click Me 3 (evt handled)</div><br/><div>sample text</div>
+</div>
+<div id="testdynamic" class="pclass">
+<div>sample text</div><br/><div class="mydiv kk">Click Me 4 (evt handled)</div><br/><div>sample text</div>
+</div>
+<br/><br/>
+<div class="kumar ashish">click me</div>
+<script type="text/javascript">
+Array.prototype._objIsArray = 'YES';
+NodeList.prototype._objIsNodeList = 'YES';
+window.selectorCache = window.selectorCache || {};
+window.getObject = function (arg) {
+  if (typeof arg === 'object') {
+    return arg;
+  } else if (typeof arg === 'string') {
+    var ret = document.querySelectorAll(arg);
+    ret._objIsNodeList = 'YES'; /*additional handling for IE8*/
+    return ret;
+  }
+  return undefined;
+};
+window.eventDelegate = function (parent, evt, selector, func) {
+  if (!document.querySelectorAll || !parent) {
+    return;
+  }
+  parent = getObject(parent);
+  if (!parent) {
+    return;
+  }
+  var tmp = function (e) {
+    e = e || window.event;
+    e.target = e.target || e.srcElement;
+    e.which = e.which || e.keyCode;
+    window.selectorCache[selector] = this.querySelectorAll(selector);
+    for (var i = 0; i < window.selectorCache[selector].length; i++) {
+      if (e.target === window.selectorCache[selector][i]) {
+        func(e);
+        break;
+      }
+    }
+  };
+  if (parent._objIsArray === 'YES' || parent._objIsNodeList === 'YES') {
+    for (var i = 0; i < parent.length; i++) {
+      if (parent[i].addEventListener) {
+        parent[i].addEventListener(evt, tmp, false);
+      } else if (parent[i].attachEvent) {
+        parent[i].attachEvent('on' + evt, (function (el, func) {
+          return function () {
+            func.call(el, event);
+          };
+        }(parent[i], tmp)));
+      }
+    }
+  } else {
+    if (parent.addEventListener) {
+      parent.addEventListener(evt, tmp, false);
+    } else if (parent.attachEvent) {
+      parent.attachEvent('on' + evt, (function (el, func) {
+        return function () {
+          func.call(el, event);
+        };
+      }(parent, tmp)));
+    }
+  }
+};
+//Usage Example:
+function handle(e) {
+  e = e || window.event;
+  e.target = e.target || e.srcElement;
+  e.which = e.which || e.keyCode;
+  alert('Event handled by parent Div !! --> target: ' + e.target.innerHTML);
+}
+window.eventDelegate('.pclass', 'click', '.kk.mydiv', handle);
+setTimeout(function () {
+  var a = document.createElement('span');
+  a.className = 'kk mydiv dyncreate';
+  a.innerHTML = 'Created after a delay of 5 Seconds';
+  document.getElementById('testdynamic').appendChild(a);
+}, 5000);
+window.eventDelegate('html', 'click', '.ashish.kumar', function (e) {
+  alert('Event handled by \'HTML\' Element');
+});
+</script>
+</body>
+</html>
