@@ -1,30 +1,33 @@
-/*
+/**************
 A simple JavaScript Linked List example by K.C.Ashish Kumar
+with traverseList and iterator features
+
 Dt: 01/03/2017
+
 (c) Ashish's Web - http://www.ashishkumarkc.com
 License: https://kcak11.mit-license.org/
-*/
+*************/
 
 var LinkedList=function(){
-	this.list;
-	this.currentElem=null;
-	
+	var _list;
+	var _currentElem=null;
+	var _firstElem;
+	var _nextElem="unassigned";
 	this.addToLinkedList=function(elem){
 		if(_checkExists(this,elem)){
 			return;
 		}
 		var wrapper={};
 		wrapper.element=elem;
-		if(!this.list){
-			this.list={};
-			this.firstElem=this.list;
-			this.list._nextElem=wrapper;
+		if(!_list){
+			_list={};
+			_firstElem=_list;
+			_list._nextElem=wrapper;
 		}else{
-			this.currentElem._nextElem=wrapper;
+			_currentElem._nextElem=wrapper;
 		}
-		this.currentElem=wrapper;
+		_currentElem=wrapper;
 	};
-	
 	_checkExists=function(ctx,elem){
 		var exists=false;
 		ctx.traverseList(function(e){
@@ -35,18 +38,28 @@ var LinkedList=function(){
 		});
 		return exists;
 	};
-	
+	this.iterator=function(){
+		_nextElem="unassigned";
+		return this;
+	};
+	this.next=function(){
+		if(_nextElem==="unassigned"){
+			_nextElem=_firstElem;
+		}else{
+			_nextElem=(_nextElem)?_nextElem._nextElem:null;
+		}
+		return (_nextElem && _nextElem._nextElem)?_nextElem._nextElem.element:null;
+	};
 	this.traverseList=function(callback){
 		if(!callback){
 			return;
 		}
-		var cElem=this.firstElem && this.firstElem._nextElem;
+		var cElem=_firstElem && _firstElem._nextElem;
 		if(!cElem){
 			return;
 		}
-		callback(cElem.element);
-		while(cElem && cElem._nextElem){
-			callback(cElem._nextElem.element);
+		while(cElem && cElem.element){
+			callback(cElem.element);
 			cElem=cElem._nextElem;
 		}
 	};
@@ -61,14 +74,20 @@ var elem3={"c":"3"};
 var elem4={"d":"4"};
 var elem5={"e":"5"};
 
-var llist=new LinkedList();
+var myList=new LinkedList();
 
-llist.addToLinkedList(elem1);
-llist.addToLinkedList(elem2);
-llist.addToLinkedList(elem3);
-llist.addToLinkedList(elem4);
-llist.addToLinkedList(elem5);
+myList.addToLinkedList(elem1);
+myList.addToLinkedList(elem2);
+myList.addToLinkedList(elem3);
+myList.addToLinkedList(elem4);
+myList.addToLinkedList(elem5);
 
-llist.traverseList(function(e){
-	console.log(e);
+myList.traverseList(function(e){
+	console.log("Via traverseList: ",e);
 });
+
+var itr=myList.iterator();
+var obj;
+while(obj=itr.next()){
+	console.log("Via Iterator: ",obj);
+}
