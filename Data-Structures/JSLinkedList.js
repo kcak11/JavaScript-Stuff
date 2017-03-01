@@ -10,6 +10,9 @@ var LinkedList=function(){
 	this.currentElem=null;
 	
 	this.addToLinkedList=function(elem){
+		if(_checkExists(this,elem)){
+			return;
+		}
 		var wrapper={};
 		wrapper.element=elem;
 		if(!this.list){
@@ -22,18 +25,28 @@ var LinkedList=function(){
 		this.currentElem=wrapper;
 	};
 	
+	_checkExists=function(ctx,elem){
+		var exists=false;
+		ctx.traverseList(function(e){
+			if(exists){return;}
+			if(e===elem){
+				exists=true;
+			}
+		});
+		return exists;
+	};
+	
 	this.traverseList=function(callback){
 		if(!callback){
 			return;
 		}
-		var cElem=this.firstElem._nextElem;
-		var traverse=true;
+		var cElem=this.firstElem && this.firstElem._nextElem;
+		if(!cElem){
+			return;
+		}
 		callback(cElem.element);
-		while(cElem && cElem._nextElem && traverse){
+		while(cElem && cElem._nextElem){
 			callback(cElem._nextElem.element);
-			if(cElem===cElem._nextElem){
-				traverse=false;
-			}
 			cElem=cElem._nextElem;
 		}
 	};
