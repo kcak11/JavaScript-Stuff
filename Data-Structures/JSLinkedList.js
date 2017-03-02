@@ -1,23 +1,52 @@
-/**************
-A simple JavaScript Linked List example by K.C.Ashish Kumar
-with 
+/************************************************************************
+
+A simple JavaScript LinkedList implementation with operations like:
+
  - addItem
  - removeItem
  - insertAfter
- - iterator & next
- - traverseList with a callback function
+ - traversal via iterator & next
+ - traversal via traverseList with a callback function
+ - contains
 
+@Author: K.C.Ashish Kumar
 Dt: 01/03/2017; Version: 1.2.1
 
 (c) Ashish's Web - http://www.ashishkumarkc.com
 License: https://kcak11.mit-license.org/
-*************/
+
+************************************************************************/
 
 var LinkedList=function(){
 	var _list;
 	var _currentElem=null;
 	var _firstElem;
 	var _nextElem="unassigned";
+	var _checkExists=function(ctx,elem){
+		var exists=false;
+		ctx.traverseList(function(e){
+			if(exists){return;}
+			if(e===elem){
+				exists=true;
+			}
+		});
+		return exists;
+	};
+	var _resetPointer=function(){
+		_nextElem="unassigned";
+	};
+	var _next=function(returnWrapper){
+		if(_nextElem==="unassigned"){
+			_nextElem=_firstElem;
+		}else{
+			_nextElem=(_nextElem)?_nextElem._nextElem:null;
+		}
+		if(!returnWrapper){
+			return (_nextElem && _nextElem._nextElem)?_nextElem._nextElem.element:null;
+		}else{
+			return (_nextElem && _nextElem._nextElem)?_nextElem._nextElem:null;
+		}
+	};
 	this.addItem=function(elem){
 		if(_checkExists(this,elem)){
 			return;
@@ -33,51 +62,39 @@ var LinkedList=function(){
 		}
 		_currentElem=wrapper;
 	};
-	_checkExists=function(ctx,elem){
-		var exists=false;
-		ctx.traverseList(function(e){
-			if(exists){return;}
-			if(e===elem){
-				exists=true;
-			}
-		});
-		return exists;
+	this.contains=function(elem){
+		return _checkExists(this,elem);
 	};
 	this.iterator=function(){
-		_nextElem="unassigned";
+		_resetPointer();
 		return this;
 	};
-	this.next=function(returnWrapper){
-		if(_nextElem==="unassigned"){
-			_nextElem=_firstElem;
-		}else{
-			_nextElem=(_nextElem)?_nextElem._nextElem:null;
-		}
-		if(!returnWrapper){
-			return (_nextElem && _nextElem._nextElem)?_nextElem._nextElem.element:null;
-		}else{
-			return (_nextElem && _nextElem._nextElem)?_nextElem._nextElem:null;
-		}
+	this.next=function(){
+		return _next(false);
 	};
 	this.removeItem=function(elem){
 		var ref;
-		var list=this.iterator();
+		_resetPointer();
 		var loop=true;
-		while(loop && (ref=list.next(true))){
+		while(loop && (ref=_next(true))){
 			if(ref && ref._nextElem && ref._nextElem.element===elem){
 				ref._nextElem=ref._nextElem._nextElem;
 				loop=false;
 			}
 		}
+		_resetPointer();
 		return elem;
 	};
 	this.insertAfter=function(elem,newElem){
+		if(_checkExists(this,newElem)){
+			return;
+		}
 		var ref;
-		var list=this.iterator();
+		_resetPointer();
 		var loop=true;
 		var wrapper={};
 		wrapper.element=newElem;
-		while(loop && (ref=list.next(true))){
+		while(loop && (ref=_next(true))){
 			if(ref && ref.element===elem){
 				var cacheRef=ref._nextElem;
 				ref._nextElem=wrapper;
@@ -85,6 +102,7 @@ var LinkedList=function(){
 				loop=false;
 			}
 		}
+		_resetPointer();
 		return newElem;
 	};
 	this.traverseList=function(callback){
@@ -100,7 +118,6 @@ var LinkedList=function(){
 			cElem=cElem._nextElem;
 		}
 	};
-		
 };
 
 /*Usage: Begins here*/
@@ -130,15 +147,16 @@ while(obj=itr.next()){
 	console.log("Via Iterator: ",obj);
 }
 
-myList.removeItem(elem3);
-
 console.log("\n\nAfter deletion of elem3");
+myList.removeItem(elem3);
 myList.traverseList(function(o){
 	console.log(o);
 });
 
-myList.insertAfter(elem4,{"x":"7"});
 console.log("\n\nAfter inserting new node {x:\"7\"} after elem4");
+myList.insertAfter(elem4,{"x":"7"});
 myList.traverseList(function(o){
 	console.log(o);
 });
+
+console.log("\n\nList contains elem2: ",myList.contains(elem2));
