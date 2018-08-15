@@ -13,7 +13,7 @@ A simple JavaScript LinkedList implementation with operations like:
 Dt: 01/03/2017; Version: 1.2.1
 
 (c) Ashish's Web - http://www.ashishkumarkc.com
-License: https://kcak11.mit-license.org/
+License: https://mit-license.kcak11.com/
 
 ************************************************************************/
 
