@@ -6,12 +6,13 @@
  */
 ((function (_g) {
     _g.scramble = function (msg, key) {
-        if(!msg || !key) {
+        if (!msg || !key) {
             throw new this.Error("msg & key are mandatory parameters");
         }
         var _key = "";
         for (var i = 0; i < key.length; i++) {
-            _key += key.charCodeAt(i) + i;
+            var _k = key.charCodeAt(i);
+            _key += _k + i + (_k % 11);
             if (i < key.length - 1) {
                 _key += "^";
             }
@@ -25,7 +26,7 @@
  * var originalMessage = "my message text";
  * var result = scramble(originalMessage, "my secret key");
  * console.log(result);
- * 
+ *
  * scramble(result,"some other key") === originalMessage //false since key did not match
  * scramble(result,"my secret key") === originalMessage //true since the key matched
  */
